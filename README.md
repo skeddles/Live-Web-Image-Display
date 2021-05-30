@@ -20,6 +20,7 @@ How? Node.js + socket.io.
 2. run command `npm install` on the directory
 3. run command `npm run start` 
 4. it should output a url. open that url whereever desired.
+5. update the image file on your harddrive, it will now update on the webpage
 
 ### Configure
 
