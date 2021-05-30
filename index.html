@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Live Web Image Display</title>
+	<meta name="mobile-web-app-capable" content="yes">	
 	<script src="/socket.io/socket.io.js"></script>
-	<script>
-		var socket = io();
 
-		socket.on('update', function(data) {
-			console.log('update',data);
-
-			document.body.style.backgroundImage = 'url(data:image/jpeg;base64,' + data.image + ')';
-		});
-	</script>
     <style>
-		html, body {
+		html, body, #previousImage {
 			width: 100%;
 			height: 100%;
 			margin: 0;
@@ -22,7 +15,7 @@
 			background-color: black;
 		}
 
-		body {
+		body, #previousImage {
 			background-repeat: no-repeat;
 			background-size: contain;
 			background-position: center;
@@ -30,9 +23,78 @@
   			image-rendering: pixelated;
 		}
 
+		#previousImage {
+			opacity: 0;
+		}
+
+		#index {
+			color: white;
+			font-weight: bold;
+			position: absolute;
+			bottom: 5px;
+			right: 5px;
+		}
 
     </style>
   </head>
   <body>
+	  <div id="previousImage"></div>
+	  <div id="index">1</div>
+
+	  <script>
+		var socket = io();
+
+		const previousImage = document.getElementById('previousImage');
+		const indexElement = document.getElementById('index');
+		var index = 0;
+
+		socket.on('update', function(data) {
+			console.log('update',data);
+
+			index++;
+			indexElement.innerHTML = index;
+
+			//save previous image
+			previousImage.style.backgroundImage=document.body.style.backgroundImage;
+
+			document.body.style.backgroundImage = 'url(data:image/jpeg;base64,' + data.image + ')';		
+		});
+
+
+		//maybe this will keep the screen from going to sleep
+		try {
+			navigator.wakeLock.request('screen');
+		} catch (err) {
+			// the wake lock request fails - usually system related, such being low on battery
+			console.log(`${err.name}, ${err.message}`);
+		}
+
+		function showPrevious () {	
+			if (previousImage.style.backgroundImage)
+			previousImage.style.opacity = 1; 
+			indexElement.innerHTML = index-1;
+		}
+		function hidePrevious () {	
+			previousImage.style.opacity = 0; 
+			indexElement.innerHTML = index;
+		}
+
+		/*function position() {
+			indexElement.style.left = window.innerWidth + window.pageXOffset - 32 + 'px';
+			indexElement.style.top = window.innerHeight + window.pageYOffset - 32 + 'px';
+		}
+
+		window.addEventListener('resize', position);*/
+
+		document.addEventListener("mousedown", showPrevious);
+		document.addEventListener("touchstart", showPrevious);
+		document.addEventListener("mouseup", hidePrevious);
+		document.addEventListener("touchend", hidePrevious);
+		document.addEventListener("touchmove", hidePrevious);
+		document.addEventListener("mouseout", hidePrevious);
+		document.addEventListener("mouseout", hidePrevious);
+		document.addEventListener("focusoutout", hidePrevious);
+
+	</script>
   </body>
 </html>

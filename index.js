@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
 });
 
 server.listen(portNumber, () => {
-	console.log("listening on *:3000");
+	console.log("server started, watching "+filePath);
 
 	//show address
 	require('dns').lookup(require('os').hostname(), function (err, add, fam) {
