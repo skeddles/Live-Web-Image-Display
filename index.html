@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		var socket = io();
+
+		socket.on('update', function(data) {
+			console.log('update',data);
+
+			document.body.style.backgroundImage = 'url(data:image/jpeg;base64,' + data.image + ')';
+		});
+	</script>
+    <style>
+		html, body {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			background-color: black;
+		}
+
+		body {
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-position: center;
+			image-rendering: crisp-edges;
+  			image-rendering: pixelated;
+		}
+
+
+    </style>
+  </head>
+  <body>
+  </body>
+</html>
